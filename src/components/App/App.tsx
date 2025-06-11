@@ -7,7 +7,7 @@ import MovieModal from "../MovieModal/MovieModal.tsx";
 import { movieService } from "../../services/movieService.ts";
 import { toast, Toaster } from "react-hot-toast";
 import type { Movie } from "../../types/movie.ts";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 
 export default function App() {
   // 1. Оголошуємо і типізуємо стан
@@ -27,17 +27,18 @@ export default function App() {
     setSelectedMovie(null);
   };
 
+  
   const handleSearch = async (newMovie: string) => {
     try {
       setIsLoading(true); // 2. змінюємо індикатор на true перед запитом
       setIsError(false);
+      setMovies([]);
       // Тут будемо виконувати HTTP-запит
       const response = await movieService(newMovie);
-      const results = response.data.results;
-      setIsLoading(false); // 3. Змінюємо індикатор на false після запиту
-      setMovies(results);
+     /*  setIsLoading(false); */ // 3. Змінюємо індикатор на false після запиту
+      setMovies(response);
 
-      if (results.length === 0) {
+      if (response.length === 0) {
         toast.error("No movies found for your request.");
       }
     } catch {
@@ -46,14 +47,6 @@ export default function App() {
       setIsLoading(false); // 5. Встановлюємо стан isLoading в false після будь якого результату запиту
     }
   };
-
-  // useEffect для блокировки скролла при открытой модалке
-  useEffect(() => {
-    document.body.style.overflow = isModalOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isModalOpen]);
 
   return (
     <>

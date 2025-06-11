@@ -9,7 +9,7 @@ export interface GetMovie{
 }
 
 
-export async function movieService(query: string) {
+export async function movieService(query: string): Promise<Movie[]> {
 
   const response = await axios.get<GetMovie>(
     `https://api.themoviedb.org/3/search/movie`,
@@ -22,5 +22,5 @@ export async function movieService(query: string) {
       },
     }
   );
-  return response;
+  return response.data.results;
 }
